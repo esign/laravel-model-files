@@ -2,6 +2,9 @@
 
 namespace Esign\ModelFiles\Concerns;
 
+use Esign\ModelFiles\Exceptions\ModelNotPersistedException;
+use Illuminate\Http\File;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -36,7 +39,12 @@ trait HasFiles
             return null;
         }
 
-        return $this->getTable() . '/' . $column . '/' . $this->getKey() . '.' . $this->getFileExtension($column);
+        return $this->getBasePath($column) . '/' . $this->getKey() . '.' . $this->getFileExtension($column);
+    }
+
+    public function getBasePath(string $column): string
+    {
+        return $this->getTable() . '/' . $column;
     }
 
     public function getFileUrl(string $column): ?string
@@ -57,5 +65,57 @@ trait HasFiles
         }
 
         return "{$this->getFileUrl($column)}?t={$this->updated_at?->timestamp}";
+    }
+
+    public function storeFile(
+        File | UploadedFile $file,
+        string $column,
+        array $options = []
+    ): string | false {
+        $this->ensureModelIsPersisted();
+
+        $this->update([
+            $column => true,
+            $this->guessFileMimeColumn($column) => $file->getClientMimeType(),
+            $this->guessFileNameColumn($column) => $file->getClientOriginalName(),
+        ]);
+
+        return $file->storeAs(
+            $this->getBasePath($column),
+            "{$this->getKey()}.{$file->guessExtension()}",
+            $options
+        );
+    }
+
+    public function deleteFile(string $column): bool
+    {
+        $this->ensureModelIsPersisted();
+
+        $this->update([
+            $column => false,
+            $this->guessFileMimeColumn($column) => null,
+            $this->guessFileNameColumn($column) => null,
+        ]);
+
+        return Storage::delete(
+            $this->getFilePath($column)
+        );
+    }
+
+    protected function ensureModelIsPersisted(): void
+    {
+        if (! $this->exists) {
+            throw ModelNotPersistedException::create();
+        }
+    }
+
+    protected function guessFileNameColumn(string $column): string
+    {
+        return "{$column}_filename";
+    }
+
+    protected function guessFileMimeColumn(string $column): string
+    {
+        return "{$column}_mime";
     }
 }

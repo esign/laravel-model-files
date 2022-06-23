@@ -2,7 +2,11 @@
 
 namespace Esign\ModelFiles\Tests\Feature\Concerns;
 
+use Esign\ModelFiles\Exceptions\ModelNotPersistedException;
+use Esign\ModelFiles\Tests\Support\Models\Post;
 use Esign\ModelFiles\Tests\TestCase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 class HasFilesTest extends TestCase
 {
@@ -85,5 +89,52 @@ class HasFilesTest extends TestCase
             $postA->getVersionedFileUrl('document')
         );
         $this->assertEquals(null, $postB->getVersionedFileUrl('document'));
+    }
+
+    /** @test */
+    public function it_can_store_a_file()
+    {
+        Storage::fake();
+        $post = $this->createPostWithDocument(false, null, null);
+        $file = UploadedFile::fake()->create('my-document.pdf', 1000, 'application/pdf');
+
+        $post->storeFile($file, 'document');
+
+        Storage::assertExists($post->getFilePath('document'));
+        $this->assertDatabaseHas(Post::class, [
+            'id' => $post->getKey(),
+            'document' => true,
+            'document_filename' => 'my-document.pdf',
+            'document_mime' => 'application/pdf',
+        ]);
+    }
+
+    /** @test */
+    public function it_can_throw_an_exception_if_storing_a_file_for_a_model_that_isnt_persisted()
+    {
+        $this->expectException(ModelNotPersistedException::class);
+        $post = new Post();
+        $file = UploadedFile::fake()->create('my-document.pdf', 1000, 'application/pdf');
+
+        $post->storeFile($file, 'document');
+    }
+
+    /** @test */
+    public function it_can_delete_a_file()
+    {
+        Storage::fake();
+        $post = $this->createPostWithDocument(false, null, null);
+        $file = UploadedFile::fake()->create('my-document.pdf', 1000, 'application/pdf');
+        $post->storeFile($file, 'document');
+
+        $post->deleteFile('document');
+
+        Storage::assertMissing($post->getFilePath('document'));
+        $this->assertDatabaseHas(Post::class, [
+            'id' => $post->getKey(),
+            'document' => false,
+            'document_filename' => null,
+            'document_mime' => null,
+        ]);
     }
 }
