@@ -48,4 +48,4 @@ abstract class TestCase extends BaseTestCase
     {
         return [ModelFilesServiceProvider::class];
     }
-} 
+}

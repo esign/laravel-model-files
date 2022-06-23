@@ -18,7 +18,7 @@ class ModelFilesServiceProvider extends ServiceProvider
         $this->mergeConfigFrom($this->configPath(), 'model-files');
 
         $this->app->singleton('model-files', function () {
-            return new ModelFiles;
+            return new ModelFiles();
         });
     }
 
