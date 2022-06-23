@@ -110,6 +110,24 @@ class HasFilesTest extends TestCase
     }
 
     /** @test */
+    public function it_can_store_a_file_using_a_different_disk()
+    {
+        Storage::fake('public');
+        $post = $this->createPostWithDocument(false, null, null);
+        $file = UploadedFile::fake()->create('my-document.pdf', 1000, 'application/pdf');
+
+        $post->usingFileDisk('public')->storeFile($file, 'document');
+
+        Storage::disk('public')->assertExists($post->getFilePath('document'));
+        $this->assertDatabaseHas(Post::class, [
+            'id' => $post->getKey(),
+            'document' => true,
+            'document_filename' => 'my-document.pdf',
+            'document_mime' => 'application/pdf',
+        ]);
+    }
+
+    /** @test */
     public function it_can_throw_an_exception_if_storing_a_file_for_a_model_that_isnt_persisted()
     {
         $this->expectException(ModelNotPersistedException::class);

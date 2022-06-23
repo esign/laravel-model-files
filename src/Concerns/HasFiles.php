@@ -10,6 +10,8 @@ use Illuminate\Support\Str;
 
 trait HasFiles
 {
+    protected ?string $fileDisk = null;
+
     public function hasFile(string $column): bool
     {
         return (bool) $this->getAttribute($column);
@@ -54,7 +56,7 @@ trait HasFiles
         }
 
         return asset(
-            Storage::url($this->getFilePath($column))
+            Storage::disk($this->fileDisk)->url($this->getFilePath($column))
         );
     }
 
@@ -83,7 +85,7 @@ trait HasFiles
         return $file->storeAs(
             $this->getBasePath($column),
             "{$this->getKey()}.{$file->guessExtension()}",
-            $options
+            ['disk' => $this->fileDisk, ...$options]
         );
     }
 
@@ -97,7 +99,7 @@ trait HasFiles
             $this->guessFileNameColumn($column) => null,
         ]);
 
-        return Storage::delete(
+        return Storage::disk($this->fileDisk)->delete(
             $this->getFilePath($column)
         );
     }
@@ -117,5 +119,12 @@ trait HasFiles
     protected function guessFileMimeColumn(string $column): string
     {
         return "{$column}_mime";
+    }
+
+    public function usingFileDisk(string $fileDisk): self
+    {
+        $this->fileDisk = $fileDisk;
+
+        return $this;
     }
 }
