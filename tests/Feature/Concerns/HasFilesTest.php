@@ -98,9 +98,10 @@ class HasFilesTest extends TestCase
         $post = $this->createPostWithDocument(false, null, null);
         $file = UploadedFile::fake()->create('my-document.pdf', 1000, 'application/pdf');
 
-        $post->storeFile($file, 'document');
+        $updatedPost = $post->storeFile($file, 'document');
 
         Storage::assertExists($post->getFilePath('document'));
+        $this->assertInstanceOf(Post::class, $updatedPost);
         $this->assertDatabaseHas(Post::class, [
             'id' => $post->getKey(),
             'document' => true,
@@ -145,9 +146,10 @@ class HasFilesTest extends TestCase
         $file = UploadedFile::fake()->create('my-document.pdf', 1000, 'application/pdf');
         $post->storeFile($file, 'document');
 
-        $post->deleteFile('document');
+        $updatedPost = $post->deleteFile('document');
 
         Storage::assertMissing($post->getFilePath('document'));
+        $this->assertInstanceOf(Post::class, $updatedPost);
         $this->assertDatabaseHas(Post::class, [
             'id' => $post->getKey(),
             'document' => false,

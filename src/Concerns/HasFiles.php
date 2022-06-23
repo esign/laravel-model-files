@@ -73,8 +73,14 @@ trait HasFiles
         File | UploadedFile $file,
         string $column,
         array $options = []
-    ): string | false {
+    ): self {
         $this->ensureModelIsPersisted();
+
+        $file->storeAs(
+            $this->getBasePath($column),
+            "{$this->getKey()}.{$file->guessExtension()}",
+            ['disk' => $this->fileDisk, ...$options]
+        );
 
         $this->update([
             $column => true,
@@ -82,16 +88,16 @@ trait HasFiles
             $this->guessFileNameColumn($column) => $file->getClientOriginalName(),
         ]);
 
-        return $file->storeAs(
-            $this->getBasePath($column),
-            "{$this->getKey()}.{$file->guessExtension()}",
-            ['disk' => $this->fileDisk, ...$options]
-        );
+        return $this;
     }
 
-    public function deleteFile(string $column): bool
+    public function deleteFile(string $column): self
     {
         $this->ensureModelIsPersisted();
+
+        Storage::disk($this->fileDisk)->delete(
+            $this->getFilePath($column)
+        );
 
         $this->update([
             $column => false,
@@ -99,9 +105,7 @@ trait HasFiles
             $this->guessFileNameColumn($column) => null,
         ]);
 
-        return Storage::disk($this->fileDisk)->delete(
-            $this->getFilePath($column)
-        );
+        return $this;
     }
 
     protected function ensureModelIsPersisted(): void
