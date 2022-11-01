@@ -62,10 +62,10 @@ trait HasFiles
             return null;
         }
 
-        return $this->getBasePath($column) . '/' . $this->getKey() . '.' . $this->getFileExtension($column);
+        return $this->getFolderPath($column) . '/' . $this->getKey() . '.' . $this->getFileExtension($column);
     }
 
-    public function getBasePath(string $column): string
+    public function getFolderPath(string $column): string
     {
         return $this->getTable() . '/' . $column;
     }
@@ -98,7 +98,7 @@ trait HasFiles
         $this->ensureModelIsPersisted();
 
         $file->storeAs(
-            $this->getBasePath($column),
+            $this->getFolderPath($column),
             "{$this->getKey()}.{$file->guessExtension()}",
             ['disk' => $this->fileDisk, ...$options]
         );

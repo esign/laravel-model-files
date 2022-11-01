@@ -99,6 +99,17 @@ class HasFilesTest extends TestCase
     }
 
     /** @test */
+    public function it_can_get_the_folder_path()
+    {
+        $post = $this->createPostWithDocument(true, 'my-document.pdf', 'application/pdf');
+
+        $this->assertEquals(
+            'posts/document',
+            $post->getFolderPath('document')
+        );
+    }
+
+    /** @test */
     public function it_can_get_the_file_url()
     {
         $postA = $this->createPostWithDocument(true, 'my-document.pdf', 'application/pdf');
