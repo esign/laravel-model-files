@@ -17,9 +17,22 @@ trait HasFiles
         return (bool) $this->getAttribute($column);
     }
 
+    public function setHasFile(string $column, bool $value): static
+    {
+        return $this->setAttribute($column, $value);
+    }
+
     public function getFileName(string $column): ?string
     {
-        return $this->getAttribute("{$column}_filename");
+        return $this->getAttribute($this->guessFileNameColumn($column));
+    }
+
+    public function setFileName(string $column, ?string $value): static
+    {
+        return $this->setAttribute(
+            $this->guessFileNameColumn($column),
+            $value
+        );
     }
 
     public function getFileExtension(string $column, ?string $default = null): ?string
@@ -32,7 +45,15 @@ trait HasFiles
 
     public function getFileMime(string $column): ?string
     {
-        return $this->getAttribute("{$column}_mime");
+        return $this->getAttribute($this->guessFileMimeColumn($column));
+    }
+
+    public function setFileMime(string $column, ?string $value): static
+    {
+        return $this->setAttribute(
+            $this->guessFileMimeColumn($column),
+            $value
+        );
     }
 
     public function getFilePath(string $column): ?string
@@ -70,10 +91,10 @@ trait HasFiles
     }
 
     public function storeFile(
-        File | UploadedFile $file,
         string $column,
+        File | UploadedFile $file,
         array $options = []
-    ): self {
+    ): static {
         $this->ensureModelIsPersisted();
 
         $file->storeAs(
@@ -82,16 +103,15 @@ trait HasFiles
             ['disk' => $this->fileDisk, ...$options]
         );
 
-        $this->update([
-            $column => true,
-            $this->guessFileMimeColumn($column) => $file->getClientMimeType(),
-            $this->guessFileNameColumn($column) => $file->getClientOriginalName(),
-        ]);
+        $this->setHasFile($column, true);
+        $this->setFileName($column, $file->getClientOriginalName());
+        $this->setFileMime($column, $file->getClientMimeType());
+        $this->save();
 
         return $this;
     }
 
-    public function deleteFile(string $column): self
+    public function deleteFile(string $column): static
     {
         $this->ensureModelIsPersisted();
 
@@ -99,11 +119,10 @@ trait HasFiles
             $this->getFilePath($column)
         );
 
-        $this->update([
-            $column => false,
-            $this->guessFileMimeColumn($column) => null,
-            $this->guessFileNameColumn($column) => null,
-        ]);
+        $this->setHasFile($column, false);
+        $this->setFileName($column, null);
+        $this->setFileMime($column, null);
+        $this->save();
 
         return $this;
     }
@@ -125,7 +144,7 @@ trait HasFiles
         return "{$column}_mime";
     }
 
-    public function usingFileDisk(string $fileDisk): self
+    public function usingFileDisk(string $fileDisk): static
     {
         $this->fileDisk = $fileDisk;
 

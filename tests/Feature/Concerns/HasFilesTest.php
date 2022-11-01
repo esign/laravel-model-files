@@ -21,6 +21,16 @@ class HasFilesTest extends TestCase
     }
 
     /** @test */
+    public function it_can_set_that_it_has_a_file()
+    {
+        $post = $this->createPostWithDocument(false, null, null);
+
+        $post = $post->setHasFile('document', true);
+
+        $this->assertTrue($post->hasFile('document'));
+    }
+
+    /** @test */
     public function it_can_get_the_file_name()
     {
         $postA = $this->createPostWithDocument(true, 'my-document.pdf', 'application/pdf');
@@ -28,6 +38,16 @@ class HasFilesTest extends TestCase
 
         $this->assertEquals('my-document.pdf', $postA->getFileName('document'));
         $this->assertEquals(null, $postB->getFileName('document'));
+    }
+
+    /** @test */
+    public function it_can_set_the_file_name()
+    {
+        $post = $this->createPostWithDocument(false, null, null);
+
+        $post = $post->setFileName('document', 'my-document.pdf');
+
+        $this->assertEquals('my-document.pdf', $post->getFileName('document'));
     }
 
     /** @test */
@@ -56,6 +76,16 @@ class HasFilesTest extends TestCase
 
         $this->assertEquals('application/pdf', $postA->getFileMime('document'));
         $this->assertEquals(null, $postB->getFileMime('document'));
+    }
+
+    /** @test */
+    public function it_can_set_the_file_mime()
+    {
+        $post = $this->createPostWithDocument(false, null, null);
+
+        $post->setFileMime('document', 'application/pdf');
+
+        $this->assertEquals('application/pdf', $post->getFileMime('document'));
     }
 
     /** @test */
@@ -98,7 +128,7 @@ class HasFilesTest extends TestCase
         $post = $this->createPostWithDocument(false, null, null);
         $file = UploadedFile::fake()->create('my-document.pdf', 1000, 'application/pdf');
 
-        $updatedPost = $post->storeFile($file, 'document');
+        $updatedPost = $post->storeFile('document', $file);
 
         Storage::assertExists($post->getFilePath('document'));
         $this->assertInstanceOf(Post::class, $updatedPost);
@@ -117,7 +147,7 @@ class HasFilesTest extends TestCase
         $post = $this->createPostWithDocument(false, null, null);
         $file = UploadedFile::fake()->create('my-document.pdf', 1000, 'application/pdf');
 
-        $post->usingFileDisk('public')->storeFile($file, 'document');
+        $post->usingFileDisk('public')->storeFile('document', $file);
 
         Storage::disk('public')->assertExists($post->getFilePath('document'));
         $this->assertDatabaseHas(Post::class, [
@@ -135,7 +165,7 @@ class HasFilesTest extends TestCase
         $post = new Post();
         $file = UploadedFile::fake()->create('my-document.pdf', 1000, 'application/pdf');
 
-        $post->storeFile($file, 'document');
+        $post->storeFile('document', $file);
     }
 
     /** @test */
@@ -144,7 +174,7 @@ class HasFilesTest extends TestCase
         Storage::fake();
         $post = $this->createPostWithDocument(false, null, null);
         $file = UploadedFile::fake()->create('my-document.pdf', 1000, 'application/pdf');
-        $post->storeFile($file, 'document');
+        $post->storeFile('document', $file);
 
         $updatedPost = $post->deleteFile('document');
 
