@@ -97,15 +97,28 @@ trait HasFiles
     ): static {
         $this->ensureModelIsPersisted();
 
-        $file->storeAs(
+        if ($file instanceof UploadedFile) {
+            $fileName = $file->getClientOriginalName();
+            $fileMime = $file->getClientMimeType();
+            $fileExtension = $file->guessExtension();
+        }
+
+        if ($file instanceof File) {
+            $fileName = $file->getFileName();
+            $fileMime = $file->getMimeType();
+            $fileExtension = $file->guessExtension();
+        }
+
+        Storage::disk($this->fileDisk)->putFileAs(
             $this->getFolderPath($column),
-            "{$this->getKey()}.{$file->guessExtension()}",
-            ['disk' => $this->fileDisk, ...$options]
+            $file,
+            "{$this->getKey()}.{$fileExtension}",
+            $options
         );
 
         $this->setHasFile($column, true);
-        $this->setFileName($column, $file->getClientOriginalName());
-        $this->setFileMime($column, $file->getClientMimeType());
+        $this->setFileName($column, $fileName);
+        $this->setFileMime($column, $fileMime);
         $this->save();
 
         return $this;

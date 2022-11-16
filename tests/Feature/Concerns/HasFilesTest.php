@@ -5,6 +5,7 @@ namespace Esign\ModelFiles\Tests\Feature\Concerns;
 use Esign\ModelFiles\Exceptions\ModelNotPersistedException;
 use Esign\ModelFiles\Tests\Support\Models\Post;
 use Esign\ModelFiles\Tests\TestCase;
+use Illuminate\Http\File;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
@@ -133,7 +134,7 @@ class HasFilesTest extends TestCase
     }
 
     /** @test */
-    public function it_can_store_a_file()
+    public function it_can_store_a_file_from_an_uploaded_file()
     {
         Storage::fake();
         $post = $this->createPostWithDocument(false, null, null);
@@ -148,6 +149,25 @@ class HasFilesTest extends TestCase
             'document' => true,
             'document_filename' => 'my-document.pdf',
             'document_mime' => 'application/pdf',
+        ]);
+    }
+
+    /** @test */
+    public function it_can_store_a_file_from_a_file()
+    {
+        Storage::fake();
+        $post = $this->createPostWithDocument(false, null, null);
+        $file = new File(__DIR__ . '/../../stubs/image.jpg');
+
+        $updatedPost = $post->storeFile('document', $file);
+
+        Storage::assertExists($post->getFilePath('document'));
+        $this->assertInstanceOf(Post::class, $updatedPost);
+        $this->assertDatabaseHas(Post::class, [
+            'id' => $post->getKey(),
+            'document' => true,
+            'document_filename' => 'image.jpg',
+            'document_mime' => 'image/jpeg',
         ]);
     }
 
