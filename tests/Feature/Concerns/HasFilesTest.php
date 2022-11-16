@@ -218,4 +218,49 @@ class HasFilesTest extends TestCase
             'document_mime' => null,
         ]);
     }
+
+    /** @test */
+    public function it_can_store_an_uploaded_file_using_the_guessed_extension_instead_of_the_one_provided_in_the_client_name()
+    {
+        Storage::fake();
+        $post = $this->createPostWithDocument(false, null, null);
+        $file = UploadedFile::fake()->create('my-image.jpeg', 1000, 'image/jpeg');
+
+        $updatedPost = $post->storeFile('document', $file);
+
+        Storage::assertExists($post->getFilePath('document'));
+        $this->assertInstanceOf(Post::class, $updatedPost);
+        $this->assertDatabaseHas(Post::class, [
+            'id' => $post->getKey(),
+            'document' => true,
+            'document_filename' => 'my-image.jpg',
+            'document_mime' => 'image/jpeg',
+        ]);
+    }
+
+    /** @test */
+    public function it_can_store_a_file_using_the_guessed_extension_instead_of_the_one_provided_in_the_client_name()
+    {
+        Storage::fake();
+        $post = $this->createPostWithDocument(false, null, null);
+        $file = new File(__DIR__ . '/../../stubs/image.jpeg');
+
+        $updatedPost = $post->storeFile('document', $file);
+
+        Storage::assertExists($post->getFilePath('document'));
+        $this->assertInstanceOf(Post::class, $updatedPost);
+        $this->assertDatabaseHas(Post::class, [
+            'id' => $post->getKey(),
+            'document' => true,
+            'document_filename' => 'image.jpg',
+            'document_mime' => 'image/jpeg',
+        ]);
+    }
+
+    /** @test */
+    public function it_can_store_jpeg_as_jpg()
+    {
+        $this->it_can_store_an_uploaded_file_using_the_guessed_extension_instead_of_the_one_provided_in_the_client_name();
+        $this->it_can_store_a_file_using_the_guessed_extension_instead_of_the_one_provided_in_the_client_name();
+    }
 }

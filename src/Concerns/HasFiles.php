@@ -6,7 +6,6 @@ use Esign\ModelFiles\Exceptions\ModelNotPersistedException;
 use Illuminate\Http\File;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 trait HasFiles
 {
@@ -37,10 +36,7 @@ trait HasFiles
 
     public function getFileExtension(string $column, ?string $default = null): ?string
     {
-        return Str::afterLast(
-            $this->getFileName($column),
-            '.'
-        ) ?: $default;
+        return pathinfo($this->getFileName($column), PATHINFO_EXTENSION) ?: $default;
     }
 
     public function getFileMime(string $column): ?string
@@ -98,15 +94,15 @@ trait HasFiles
         $this->ensureModelIsPersisted();
 
         if ($file instanceof UploadedFile) {
-            $fileName = $file->getClientOriginalName();
             $fileMime = $file->getClientMimeType();
             $fileExtension = $file->guessExtension();
+            $fileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . ".$fileExtension";
         }
 
         if ($file instanceof File) {
-            $fileName = $file->getFileName();
             $fileMime = $file->getMimeType();
             $fileExtension = $file->guessExtension();
+            $fileName = pathinfo($file->getFilename(), PATHINFO_FILENAME) . ".$fileExtension";
         }
 
         Storage::disk($this->fileDisk)->putFileAs(
