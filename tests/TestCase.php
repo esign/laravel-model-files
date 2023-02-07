@@ -2,7 +2,6 @@
 
 namespace Esign\ModelFiles\Tests;
 
-use Esign\ModelFiles\ModelFilesServiceProvider;
 use Esign\ModelFiles\Tests\Support\Models\Post;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -42,10 +41,5 @@ abstract class TestCase extends BaseTestCase
             'document_mime' => $documentMime,
             ...$attributes,
         ]);
-    }
-
-    protected function getPackageProviders($app): array
-    {
-        return [ModelFilesServiceProvider::class];
     }
 }

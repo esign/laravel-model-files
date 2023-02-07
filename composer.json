@@ -42,16 +42,6 @@
     "config": {
         "sort-packages": true
     },
-    "extra": {
-        "laravel": {
-            "providers": [
-                "Esign\\ModelFiles\\ModelFilesServiceProvider"
-            ],
-            "aliases": {
-                "ModelFiles": "Esign\\ModelFiles\\Facades\\ModelFilesFacade"
-            }
-        }
-    },
     "minimum-stability": "dev",
     "prefer-stable": true
 }
