@@ -60,6 +60,61 @@ $post->getVersionedFileUrl('file'); // returns https://www.example.com/storage/p
 $post->deleteFile('file');
 ```
 
+### Using with underscore translatable
+This package ships with support for the [underscore translatable](github.com/esign/laravel-underscore-translatable) package.
+
+Make sure to include the file, filename and mime columns within the `translatable` array:
+```php
+use Esign\ModelFiles\Concerns\HasFiles;
+use Esign\UnderscoreTranslatable\UnderscoreTranslatable;
+use Illuminate\Database\Eloquent\Model;
+
+class UnderscoreTranslatablePost extends Model
+{
+    use HasFiles;
+    use UnderscoreTranslatable;
+
+    public $translatable = [
+        'document',
+        'document_filename',
+        'document_mime',
+    ];
+}
+```
+
+Next up, your migrations should look like the following:
+```php
+Schema::create('posts', function (Blueprint $table) {
+    $table->id();
+    $table->boolean('document_en')->default(0);
+    $table->boolean('document_nl')->default(0);
+    $table->string('document_filename_en')->nullable();
+    $table->string('document_filename_nl')->nullable();
+    $table->string('document_mime_en')->nullable();
+    $table->string('document_mime_nl')->nullable();
+});
+```
+
+You may now use the internal methods using the default or the specific locale:
+```php
+$post->hasFile('document'); // returns true/false
+$post->getFolderPath('document'); // returns posts/document_en
+$post->getFilePath('document'); // returns posts/document_en/1.pdf
+$post->getFileMime('document'); // returns application/pdf
+$post->getFileExtension('document'); // returns pdf
+$post->getFileUrl('document'); // returns https://www.example.com/storage/posts/document_en/1.pdf
+$post->getVersionedFileUrl('document'); // returns https://www.example.com/storage/posts/document_en/1.pdf?t=1675776047
+```
+
+```php
+$post->hasFile('document_en'); // returns true/false
+$post->getFolderPath('document_en'); // returns posts/document_en
+$post->getFilePath('document_en'); // returns posts/document_en/1.pdf
+$post->getFileMime('document_en'); // returns application/pdf
+$post->getFileExtension('document_en'); // returns pdf
+$post->getFileUrl('document_en'); // returns https://www.example.com/storage/posts/document_en/1.pdf
+$post->getVersionedFileUrl('document_en'); // returns https://www.example.com/storage/posts/document_en/1.pdf?t=1675776047
+```
 
 ### Testing
 

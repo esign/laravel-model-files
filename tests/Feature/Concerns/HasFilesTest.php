@@ -5,12 +5,34 @@ namespace Esign\ModelFiles\Tests\Feature\Concerns;
 use Esign\ModelFiles\Exceptions\ModelNotPersistedException;
 use Esign\ModelFiles\Tests\Support\Models\Post;
 use Esign\ModelFiles\Tests\TestCase;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Http\File;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 
 class HasFilesTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        Schema::create('posts', function (Blueprint $table) {
+            $table->id();
+            $table->boolean('document')->default(false);
+            $table->string('document_filename')->nullable();
+            $table->string('document_mime')->nullable();
+            $table->timestamps();
+        });
+    }
+
+    protected function tearDown(): void
+    {
+        Schema::dropIfExists('posts');
+
+        parent::tearDown();
+    }
+
     /** @test */
     public function it_can_check_if_it_has_a_file()
     {
@@ -262,5 +284,19 @@ class HasFilesTest extends TestCase
     {
         $this->it_can_store_an_uploaded_file_using_the_guessed_extension_instead_of_the_one_provided_in_the_client_name();
         $this->it_can_store_a_file_using_the_guessed_extension_instead_of_the_one_provided_in_the_client_name();
+    }
+
+    protected function createPostWithDocument(
+        bool $document,
+        ?string $documentFilename,
+        ?string $documentMime,
+        array $attributes = [],
+    ): Post {
+        return Post::create([
+            'document' => $document,
+            'document_filename' => $documentFilename,
+            'document_mime' => $documentMime,
+            ...$attributes,
+        ]);
     }
 }
