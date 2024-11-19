@@ -37,6 +37,24 @@ Schema::create('posts', function (Blueprint $table) {
 });
 ```
 
+### Configuring the disk
+By default, the files will be associated with the default disk configured in your `config/filesystems.php` file.
+You may override this by defining the `getFileDisk` method on your model.
+```php
+use Esign\ModelFiles\Concerns\HasFiles;
+use Illuminate\Database\Eloquent\Model;
+
+class Post extends Model
+{
+    use HasFiles;
+
+    public function getFileDisk(): string
+    {
+        return 'public';
+    }
+}
+```
+
 ### Storing files
 To store files you may use the `storeFile` method.
 This method accepts instances of both the `Illuminate\Http\File` and `Illuminate\Http\UploadedFile` classes.

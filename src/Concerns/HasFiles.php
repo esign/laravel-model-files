@@ -81,7 +81,7 @@ trait HasFiles
         }
 
         return asset(
-            Storage::disk($this->fileDisk)->url($this->getFilePath($column))
+            Storage::disk($this->getFileDisk())->url($this->getFilePath($column))
         );
     }
 
@@ -113,7 +113,7 @@ trait HasFiles
             $fileName = pathinfo($file->getFilename(), PATHINFO_FILENAME) . ".$fileExtension";
         }
 
-        Storage::disk($this->fileDisk)->putFileAs(
+        Storage::disk($this->getFileDisk())->putFileAs(
             $this->getFolderPath($column),
             $file,
             "{$this->getKey()}.{$fileExtension}",
@@ -132,7 +132,7 @@ trait HasFiles
     {
         $this->ensureModelIsPersisted();
 
-        Storage::disk($this->fileDisk)->delete(
+        Storage::disk($this->getFileDisk())->delete(
             $this->getFilePath($column)
         );
 
@@ -215,6 +215,11 @@ trait HasFiles
         }
 
         return null;
+    }
+
+    public function getFileDisk(): ?string
+    {
+        return $this->fileDisk;
     }
 
     public function usingFileDisk(string $fileDisk): static

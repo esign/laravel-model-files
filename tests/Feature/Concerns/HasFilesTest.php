@@ -4,6 +4,7 @@ namespace Esign\ModelFiles\Tests\Feature\Concerns;
 
 use Esign\ModelFiles\Exceptions\ModelNotPersistedException;
 use Esign\ModelFiles\Tests\Support\Models\Post;
+use Esign\ModelFiles\Tests\Support\Models\PublicPost;
 use Esign\ModelFiles\Tests\TestCase;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Http\File;
@@ -204,6 +205,24 @@ class HasFilesTest extends TestCase
 
         Storage::disk('public')->assertExists($post->getFilePath('document'));
         $this->assertDatabaseHas(Post::class, [
+            'id' => $post->getKey(),
+            'document' => true,
+            'document_filename' => 'my-document.pdf',
+            'document_mime' => 'application/pdf',
+        ]);
+    }
+
+    /** @test */
+    public function it_can_configure_a_custom_disk_per_model()
+    {
+        Storage::fake('public');
+        $post = PublicPost::create(['document' => false, 'document_filename' => null, 'document_mime' => null]);
+        $file = UploadedFile::fake()->create('my-document.pdf', 1000, 'application/pdf');
+
+        $post->storeFile('document', $file);
+
+        Storage::disk('public')->assertExists($post->getFilePath('document'));
+        $this->assertDatabaseHas(PublicPost::class, [
             'id' => $post->getKey(),
             'document' => true,
             'document_filename' => 'my-document.pdf',
