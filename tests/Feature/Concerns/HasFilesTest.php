@@ -318,4 +318,15 @@ class HasFilesTest extends TestCase
             ...$attributes,
         ]);
     }
+
+    /** @test */
+    public function it_can_get_the_file_path_on_disk()
+    {
+        Storage::fake();
+        $post = $this->createPostWithDocument(true, 'my-document.pdf', 'application/pdf');
+
+        $filePathOnDisk = $post->getFilePathOnDisk('document');
+
+        $this->assertEquals(Storage::path($post->getFilePath('document')), $filePathOnDisk);
+    }
 }

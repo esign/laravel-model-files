@@ -69,6 +69,17 @@ trait HasFiles
         return $this->getFolderPath($column) . '/' . $this->getKey() . '.' . $this->getFileExtension($column);
     }
 
+    public function getFilePathOnDisk(string $column): ?string
+    {
+        if (! $this->hasFile($column)) {
+            return null;
+        }
+
+        return Storage::disk($this->getFileDisk())->path(
+            $this->getFilePath($column)
+        );
+    }
+
     public function getFolderPath(string $column): string
     {
         return $this->getTable() . '/' . $this->guessFileColumn($column);

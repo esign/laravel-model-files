@@ -67,6 +67,7 @@ $post->storeFile('file', $request->file('attachment'));
 $post->hasFile('file'); // returns true/false
 $post->getFolderPath('file'); // returns posts/file
 $post->getFilePath('file'); // returns posts/file/1.pdf
+$post->getFilePathOnDisk('file'); // returns /path/to/storage/app/public/posts/file/1.pdf
 $post->getFileMime('file'); // returns application/pdf
 $post->getFileExtension('file'); // returns pdf
 $post->getFileUrl('file'); // returns https://www.example.com/storage/posts/file/1.pdf
