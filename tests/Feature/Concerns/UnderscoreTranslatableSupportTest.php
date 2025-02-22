@@ -2,6 +2,7 @@
 
 namespace Esign\ModelFiles\Tests\Feature\Concerns;
 
+use PHPUnit\Framework\Attributes\Test;
 use Esign\ModelFiles\Tests\Support\Models\UnderscoreTranslatablePost;
 use Esign\ModelFiles\Tests\TestCase;
 use Illuminate\Database\Schema\Blueprint;
@@ -9,7 +10,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 
-class UnderscoreTranslatableSupportTest extends TestCase
+final class UnderscoreTranslatableSupportTest extends TestCase
 {
     protected function setUp(): void
     {
@@ -31,8 +32,8 @@ class UnderscoreTranslatableSupportTest extends TestCase
         parent::tearDown();
     }
 
-    /** @test */
-    public function it_can_check_if_it_has_a_file_for_the_default_locale()
+    #[Test]
+    public function it_can_check_if_it_has_a_file_for_the_default_locale(): void
     {
         $postA = $this->createPostWithDocument(true, 'my-document.pdf', 'application/pdf');
         $postB = $this->createPostWithDocument(false, null, null);
@@ -41,8 +42,8 @@ class UnderscoreTranslatableSupportTest extends TestCase
         $this->assertFalse($postB->hasFile('document'));
     }
 
-    /** @test */
-    public function it_can_check_if_it_has_a_file_for_a_specific_locale()
+    #[Test]
+    public function it_can_check_if_it_has_a_file_for_a_specific_locale(): void
     {
         $postA = $this->createPostWithDocument(true, 'my-document.pdf', 'application/pdf');
         $postB = $this->createPostWithDocument(false, null, null);
@@ -51,8 +52,8 @@ class UnderscoreTranslatableSupportTest extends TestCase
         $this->assertFalse($postB->hasFile('document_en'));
     }
 
-    /** @test */
-    public function it_can_set_that_it_has_a_file_for_the_default_locale()
+    #[Test]
+    public function it_can_set_that_it_has_a_file_for_the_default_locale(): void
     {
         $post = $this->createPostWithDocument(false, null, null);
 
@@ -61,8 +62,8 @@ class UnderscoreTranslatableSupportTest extends TestCase
         $this->assertTrue($post->hasFile('document'));
     }
 
-    /** @test */
-    public function it_can_set_that_it_has_a_file_for_a_specific_locale()
+    #[Test]
+    public function it_can_set_that_it_has_a_file_for_a_specific_locale(): void
     {
         $post = $this->createPostWithDocument(false, null, null);
 
@@ -71,8 +72,8 @@ class UnderscoreTranslatableSupportTest extends TestCase
         $this->assertTrue($post->hasFile('document_en'));
     }
 
-    /** @test */
-    public function it_can_get_the_file_name_for_the_default_locale()
+    #[Test]
+    public function it_can_get_the_file_name_for_the_default_locale(): void
     {
         $postA = $this->createPostWithDocument(true, 'my-document.pdf', 'application/pdf');
         $postB = $this->createPostWithDocument(false, null, null);
@@ -81,8 +82,8 @@ class UnderscoreTranslatableSupportTest extends TestCase
         $this->assertEquals(null, $postB->getFileName('document'));
     }
 
-    /** @test */
-    public function it_can_get_the_file_name_for_a_specific_locale()
+    #[Test]
+    public function it_can_get_the_file_name_for_a_specific_locale(): void
     {
         $postA = $this->createPostWithDocument(true, 'my-document.pdf', 'application/pdf');
         $postB = $this->createPostWithDocument(false, null, null);
@@ -91,8 +92,8 @@ class UnderscoreTranslatableSupportTest extends TestCase
         $this->assertEquals(null, $postB->getFileName('document_en'));
     }
 
-    /** @test */
-    public function it_can_set_the_file_name_for_the_default_locale()
+    #[Test]
+    public function it_can_set_the_file_name_for_the_default_locale(): void
     {
         $post = $this->createPostWithDocument(false, null, null);
 
@@ -102,8 +103,8 @@ class UnderscoreTranslatableSupportTest extends TestCase
     }
 
 
-    /** @test */
-    public function it_can_set_the_file_name_for_a_specific_locale()
+    #[Test]
+    public function it_can_set_the_file_name_for_a_specific_locale(): void
     {
         $post = $this->createPostWithDocument(false, null, null);
 
@@ -112,8 +113,8 @@ class UnderscoreTranslatableSupportTest extends TestCase
         $this->assertEquals('my-document.pdf', $post->getFileName('document_en'));
     }
 
-    /** @test */
-    public function it_can_get_the_file_extension_for_the_default_locale()
+    #[Test]
+    public function it_can_get_the_file_extension_for_the_default_locale(): void
     {
         $postA = $this->createPostWithDocument(true, 'my-document.pdf', 'application/pdf');
         $postB = $this->createPostWithDocument(false, null, null);
@@ -122,8 +123,8 @@ class UnderscoreTranslatableSupportTest extends TestCase
         $this->assertEquals(null, $postB->getFileExtension('document'));
     }
 
-    /** @test */
-    public function it_can_get_the_file_extension_for_a_specific_locale()
+    #[Test]
+    public function it_can_get_the_file_extension_for_a_specific_locale(): void
     {
         $postA = $this->createPostWithDocument(true, 'my-document.pdf', 'application/pdf');
         $postB = $this->createPostWithDocument(false, null, null);
@@ -132,8 +133,8 @@ class UnderscoreTranslatableSupportTest extends TestCase
         $this->assertEquals(null, $postB->getFileExtension('document_en'));
     }
 
-    /** @test */
-    public function it_can_get_the_file_mime_for_the_default_locale()
+    #[Test]
+    public function it_can_get_the_file_mime_for_the_default_locale(): void
     {
         $postA = $this->createPostWithDocument(true, 'my-document.pdf', 'application/pdf');
         $postB = $this->createPostWithDocument(false, null, null);
@@ -142,8 +143,8 @@ class UnderscoreTranslatableSupportTest extends TestCase
         $this->assertEquals(null, $postB->getFileMime('document'));
     }
 
-    /** @test */
-    public function it_can_get_the_file_mime_for_a_specific_locale()
+    #[Test]
+    public function it_can_get_the_file_mime_for_a_specific_locale(): void
     {
         $postA = $this->createPostWithDocument(true, 'my-document.pdf', 'application/pdf');
         $postB = $this->createPostWithDocument(false, null, null);
@@ -152,8 +153,8 @@ class UnderscoreTranslatableSupportTest extends TestCase
         $this->assertEquals(null, $postB->getFileMime('document_en'));
     }
 
-    /** @test */
-    public function it_can_set_the_file_mime_for_the_default_locale()
+    #[Test]
+    public function it_can_set_the_file_mime_for_the_default_locale(): void
     {
         $post = $this->createPostWithDocument(false, null, null);
 
@@ -162,8 +163,8 @@ class UnderscoreTranslatableSupportTest extends TestCase
         $this->assertEquals('application/pdf', $post->getFileMime('document'));
     }
 
-    /** @test */
-    public function it_can_set_the_file_mime_for_a_specific_locale()
+    #[Test]
+    public function it_can_set_the_file_mime_for_a_specific_locale(): void
     {
         $post = $this->createPostWithDocument(false, null, null);
 
@@ -172,8 +173,8 @@ class UnderscoreTranslatableSupportTest extends TestCase
         $this->assertEquals('application/pdf', $post->getFileMime('document_en'));
     }
 
-    /** @test */
-    public function it_can_get_the_file_path_for_the_default_locale()
+    #[Test]
+    public function it_can_get_the_file_path_for_the_default_locale(): void
     {
         $postA = $this->createPostWithDocument(true, 'my-document.pdf', 'application/pdf');
         $postB = $this->createPostWithDocument(false, null, null);
@@ -185,8 +186,8 @@ class UnderscoreTranslatableSupportTest extends TestCase
         $this->assertEquals(null, $postB->getFilePath('document'));
     }
 
-    /** @test */
-    public function it_can_get_the_file_path_for_a_specific_locale()
+    #[Test]
+    public function it_can_get_the_file_path_for_a_specific_locale(): void
     {
         $postA = $this->createPostWithDocument(true, 'my-document.pdf', 'application/pdf');
         $postB = $this->createPostWithDocument(false, null, null);
@@ -198,8 +199,8 @@ class UnderscoreTranslatableSupportTest extends TestCase
         $this->assertEquals(null, $postB->getFilePath('document_en'));
     }
 
-    /** @test */
-    public function it_can_get_the_folder_path_for_the_default_locale()
+    #[Test]
+    public function it_can_get_the_folder_path_for_the_default_locale(): void
     {
         $post = $this->createPostWithDocument(true, 'my-document.pdf', 'application/pdf');
 
@@ -209,8 +210,8 @@ class UnderscoreTranslatableSupportTest extends TestCase
         );
     }
 
-    /** @test */
-    public function it_can_get_the_folder_path_for_a_specific_locale()
+    #[Test]
+    public function it_can_get_the_folder_path_for_a_specific_locale(): void
     {
         $post = $this->createPostWithDocument(true, 'my-document.pdf', 'application/pdf');
 
@@ -220,8 +221,8 @@ class UnderscoreTranslatableSupportTest extends TestCase
         );
     }
 
-    /** @test */
-    public function it_can_get_the_file_url_for_the_default_locale()
+    #[Test]
+    public function it_can_get_the_file_url_for_the_default_locale(): void
     {
         $postA = $this->createPostWithDocument(true, 'my-document.pdf', 'application/pdf');
         $postB = $this->createPostWithDocument(false, null, null);
@@ -233,8 +234,8 @@ class UnderscoreTranslatableSupportTest extends TestCase
         $this->assertEquals(null, $postB->getFileUrl('document'));
     }
 
-    /** @test */
-    public function it_can_get_the_file_url_for_a_specific_locale()
+    #[Test]
+    public function it_can_get_the_file_url_for_a_specific_locale(): void
     {
         $postA = $this->createPostWithDocument(true, 'my-document.pdf', 'application/pdf');
         $postB = $this->createPostWithDocument(false, null, null);
@@ -246,8 +247,8 @@ class UnderscoreTranslatableSupportTest extends TestCase
         $this->assertEquals(null, $postB->getFileUrl('document_en'));
     }
 
-    /** @test */
-    public function it_can_get_the_versioned_file_url_for_the_default_locale()
+    #[Test]
+    public function it_can_get_the_versioned_file_url_for_the_default_locale(): void
     {
         $postA = $this->createPostWithDocument(true, 'my-document.pdf', 'application/pdf');
         $postB = $this->createPostWithDocument(false, null, null);
@@ -259,8 +260,8 @@ class UnderscoreTranslatableSupportTest extends TestCase
         $this->assertEquals(null, $postB->getVersionedFileUrl('document'));
     }
 
-    /** @test */
-    public function it_can_get_the_versioned_file_url_for_a_specific_locale()
+    #[Test]
+    public function it_can_get_the_versioned_file_url_for_a_specific_locale(): void
     {
         $postA = $this->createPostWithDocument(true, 'my-document.pdf', 'application/pdf');
         $postB = $this->createPostWithDocument(false, null, null);
@@ -272,8 +273,8 @@ class UnderscoreTranslatableSupportTest extends TestCase
         $this->assertEquals(null, $postB->getVersionedFileUrl('document_en'));
     }
 
-    /** @test */
-    public function it_can_store_a_file_for_the_default_locale()
+    #[Test]
+    public function it_can_store_a_file_for_the_default_locale(): void
     {
         Storage::fake();
         $post = $this->createPostWithDocument(false, null, null);
@@ -291,8 +292,8 @@ class UnderscoreTranslatableSupportTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function it_can_store_a_file_for_a_specific_locale()
+    #[Test]
+    public function it_can_store_a_file_for_a_specific_locale(): void
     {
         Storage::fake();
         $post = $this->createPostWithDocument(false, null, null);
@@ -310,8 +311,8 @@ class UnderscoreTranslatableSupportTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function it_can_delete_a_file_for_the_default_locale()
+    #[Test]
+    public function it_can_delete_a_file_for_the_default_locale(): void
     {
         Storage::fake();
         $post = $this->createPostWithDocument(false, null, null);
@@ -330,8 +331,8 @@ class UnderscoreTranslatableSupportTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function it_can_delete_a_file_for_a_specific_locale()
+    #[Test]
+    public function it_can_delete_a_file_for_a_specific_locale(): void
     {
         Storage::fake();
         $post = $this->createPostWithDocument(false, null, null);

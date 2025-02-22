@@ -2,10 +2,12 @@
 
 namespace Esign\ModelFiles\Tests;
 
-class ModelFilesTest extends TestCase
+use PHPUnit\Framework\Attributes\Test;
+
+final class ModelFilesTest extends TestCase
 {
-    /** @test */
-    public function test()
+    #[Test]
+    public function test(): void
     {
         $this->assertTrue(true);
     }

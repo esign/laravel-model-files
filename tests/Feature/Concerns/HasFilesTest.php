@@ -2,6 +2,7 @@
 
 namespace Esign\ModelFiles\Tests\Feature\Concerns;
 
+use PHPUnit\Framework\Attributes\Test;
 use Esign\ModelFiles\Exceptions\ModelNotPersistedException;
 use Esign\ModelFiles\Tests\Support\Models\Post;
 use Esign\ModelFiles\Tests\Support\Models\PublicPost;
@@ -12,7 +13,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 
-class HasFilesTest extends TestCase
+final class HasFilesTest extends TestCase
 {
     protected function setUp(): void
     {
@@ -34,8 +35,8 @@ class HasFilesTest extends TestCase
         parent::tearDown();
     }
 
-    /** @test */
-    public function it_can_check_if_it_has_a_file()
+    #[Test]
+    public function it_can_check_if_it_has_a_file(): void
     {
         $postA = $this->createPostWithDocument(true, 'my-document.pdf', 'application/pdf');
         $postB = $this->createPostWithDocument(false, null, null);
@@ -44,8 +45,8 @@ class HasFilesTest extends TestCase
         $this->assertFalse($postB->hasFile('document'));
     }
 
-    /** @test */
-    public function it_can_set_that_it_has_a_file()
+    #[Test]
+    public function it_can_set_that_it_has_a_file(): void
     {
         $post = $this->createPostWithDocument(false, null, null);
 
@@ -54,8 +55,8 @@ class HasFilesTest extends TestCase
         $this->assertTrue($post->hasFile('document'));
     }
 
-    /** @test */
-    public function it_can_get_the_file_name()
+    #[Test]
+    public function it_can_get_the_file_name(): void
     {
         $postA = $this->createPostWithDocument(true, 'my-document.pdf', 'application/pdf');
         $postB = $this->createPostWithDocument(false, null, null);
@@ -64,8 +65,8 @@ class HasFilesTest extends TestCase
         $this->assertEquals(null, $postB->getFileName('document'));
     }
 
-    /** @test */
-    public function it_can_set_the_file_name()
+    #[Test]
+    public function it_can_set_the_file_name(): void
     {
         $post = $this->createPostWithDocument(false, null, null);
 
@@ -74,8 +75,8 @@ class HasFilesTest extends TestCase
         $this->assertEquals('my-document.pdf', $post->getFileName('document'));
     }
 
-    /** @test */
-    public function it_can_get_the_file_extension()
+    #[Test]
+    public function it_can_get_the_file_extension(): void
     {
         $postA = $this->createPostWithDocument(true, 'my-document.pdf', 'application/pdf');
         $postB = $this->createPostWithDocument(false, null, null);
@@ -84,16 +85,16 @@ class HasFilesTest extends TestCase
         $this->assertEquals(null, $postB->getFileExtension('document'));
     }
 
-    /** @test */
-    public function it_can_get_the_file_extension_with_a_default()
+    #[Test]
+    public function it_can_get_the_file_extension_with_a_default(): void
     {
         $post = $this->createPostWithDocument(false, null, null);
 
         $this->assertEquals('pdf', $post->getFileExtension('document', 'pdf'));
     }
 
-    /** @test */
-    public function it_can_get_the_file_mime()
+    #[Test]
+    public function it_can_get_the_file_mime(): void
     {
         $postA = $this->createPostWithDocument(true, 'my-document.pdf', 'application/pdf');
         $postB = $this->createPostWithDocument(false, null, null);
@@ -102,8 +103,8 @@ class HasFilesTest extends TestCase
         $this->assertEquals(null, $postB->getFileMime('document'));
     }
 
-    /** @test */
-    public function it_can_set_the_file_mime()
+    #[Test]
+    public function it_can_set_the_file_mime(): void
     {
         $post = $this->createPostWithDocument(false, null, null);
 
@@ -112,8 +113,8 @@ class HasFilesTest extends TestCase
         $this->assertEquals('application/pdf', $post->getFileMime('document'));
     }
 
-    /** @test */
-    public function it_can_get_the_file_path()
+    #[Test]
+    public function it_can_get_the_file_path(): void
     {
         $postA = $this->createPostWithDocument(true, 'my-document.pdf', 'application/pdf');
         $postB = $this->createPostWithDocument(false, null, null);
@@ -122,8 +123,8 @@ class HasFilesTest extends TestCase
         $this->assertEquals(null, $postB->getFilePath('document'));
     }
 
-    /** @test */
-    public function it_can_get_the_folder_path()
+    #[Test]
+    public function it_can_get_the_folder_path(): void
     {
         $post = $this->createPostWithDocument(true, 'my-document.pdf', 'application/pdf');
 
@@ -133,8 +134,8 @@ class HasFilesTest extends TestCase
         );
     }
 
-    /** @test */
-    public function it_can_get_the_file_url()
+    #[Test]
+    public function it_can_get_the_file_url(): void
     {
         $postA = $this->createPostWithDocument(true, 'my-document.pdf', 'application/pdf');
         $postB = $this->createPostWithDocument(false, null, null);
@@ -143,8 +144,8 @@ class HasFilesTest extends TestCase
         $this->assertEquals(null, $postB->getFileUrl('document'));
     }
 
-    /** @test */
-    public function it_can_get_the_versioned_file_url()
+    #[Test]
+    public function it_can_get_the_versioned_file_url(): void
     {
         $postA = $this->createPostWithDocument(true, 'my-document.pdf', 'application/pdf');
         $postB = $this->createPostWithDocument(false, null, null);
@@ -156,8 +157,8 @@ class HasFilesTest extends TestCase
         $this->assertEquals(null, $postB->getVersionedFileUrl('document'));
     }
 
-    /** @test */
-    public function it_can_store_a_file_from_an_uploaded_file()
+    #[Test]
+    public function it_can_store_a_file_from_an_uploaded_file(): void
     {
         Storage::fake();
         $post = $this->createPostWithDocument(false, null, null);
@@ -175,8 +176,8 @@ class HasFilesTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function it_can_store_a_file_from_a_file()
+    #[Test]
+    public function it_can_store_a_file_from_a_file(): void
     {
         Storage::fake();
         $post = $this->createPostWithDocument(false, null, null);
@@ -194,8 +195,8 @@ class HasFilesTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function it_can_store_a_file_using_a_different_disk()
+    #[Test]
+    public function it_can_store_a_file_using_a_different_disk(): void
     {
         Storage::fake('public');
         $post = $this->createPostWithDocument(false, null, null);
@@ -212,8 +213,8 @@ class HasFilesTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function it_can_configure_a_custom_disk_per_model()
+    #[Test]
+    public function it_can_configure_a_custom_disk_per_model(): void
     {
         Storage::fake('public');
         $post = PublicPost::create(['document' => false, 'document_filename' => null, 'document_mime' => null]);
@@ -230,8 +231,8 @@ class HasFilesTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function it_can_throw_an_exception_if_storing_a_file_for_a_model_that_isnt_persisted()
+    #[Test]
+    public function it_can_throw_an_exception_if_storing_a_file_for_a_model_that_isnt_persisted(): void
     {
         $this->expectException(ModelNotPersistedException::class);
         $post = new Post();
@@ -240,8 +241,8 @@ class HasFilesTest extends TestCase
         $post->storeFile('document', $file);
     }
 
-    /** @test */
-    public function it_can_delete_a_file()
+    #[Test]
+    public function it_can_delete_a_file(): void
     {
         Storage::fake();
         $post = $this->createPostWithDocument(false, null, null);
@@ -260,8 +261,8 @@ class HasFilesTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function it_can_store_an_uploaded_file_using_the_guessed_extension_instead_of_the_one_provided_in_the_client_name()
+    #[Test]
+    public function it_can_store_an_uploaded_file_using_the_guessed_extension_instead_of_the_one_provided_in_the_client_name(): void
     {
         Storage::fake();
         $post = $this->createPostWithDocument(false, null, null);
@@ -279,8 +280,8 @@ class HasFilesTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function it_can_store_a_file_using_the_guessed_extension_instead_of_the_one_provided_in_the_client_name()
+    #[Test]
+    public function it_can_store_a_file_using_the_guessed_extension_instead_of_the_one_provided_in_the_client_name(): void
     {
         Storage::fake();
         $post = $this->createPostWithDocument(false, null, null);
@@ -298,8 +299,8 @@ class HasFilesTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function it_can_store_jpeg_as_jpg()
+    #[Test]
+    public function it_can_store_jpeg_as_jpg(): void
     {
         $this->it_can_store_an_uploaded_file_using_the_guessed_extension_instead_of_the_one_provided_in_the_client_name();
         $this->it_can_store_a_file_using_the_guessed_extension_instead_of_the_one_provided_in_the_client_name();
@@ -319,8 +320,8 @@ class HasFilesTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function it_can_get_the_file_path_on_disk()
+    #[Test]
+    public function it_can_get_the_file_path_on_disk(): void
     {
         Storage::fake();
         $post = $this->createPostWithDocument(true, 'my-document.pdf', 'application/pdf');
