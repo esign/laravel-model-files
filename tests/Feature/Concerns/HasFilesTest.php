@@ -13,7 +13,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 
-class HasFilesTest extends TestCase
+final class HasFilesTest extends TestCase
 {
     protected function setUp(): void
     {

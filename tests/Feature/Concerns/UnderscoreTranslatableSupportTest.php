@@ -10,7 +10,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 
-class UnderscoreTranslatableSupportTest extends TestCase
+final class UnderscoreTranslatableSupportTest extends TestCase
 {
     protected function setUp(): void
     {
