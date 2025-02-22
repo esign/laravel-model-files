@@ -7,7 +7,7 @@ use PHPUnit\Framework\Attributes\Test;
 class ModelFilesTest extends TestCase
 {
     #[Test]
-    public function test()
+    public function test(): void
     {
         $this->assertTrue(true);
     }
