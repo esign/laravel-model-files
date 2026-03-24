@@ -196,6 +196,26 @@ final class HasFilesTest extends TestCase
     }
 
     #[Test]
+    public function it_can_store_a_file_from_a_string(): void
+    {
+        Storage::fake();
+        $post = $this->createPostWithDocument(false, null, null);
+
+        $updatedPost = $post->storeFileFromString('document', 'Hello from a string');
+
+        Storage::assertExists($post->getFilePath('document'));
+        $this->assertSame('Hello from a string', Storage::get($post->getFilePath('document')));
+        $this->assertInstanceOf(Post::class, $updatedPost);
+        $this->assertDatabaseHas(Post::class, [
+            'id' => $post->getKey(),
+            'document' => true,
+            'document_mime' => 'text/plain',
+        ]);
+        $this->assertStringStartsWith('model-file-', $post->fresh()->getFileName('document'));
+        $this->assertSame('txt', $post->fresh()->getFileExtension('document'));
+    }
+
+    #[Test]
     public function it_can_store_a_file_using_a_different_disk(): void
     {
         Storage::fake('public');

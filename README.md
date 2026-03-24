@@ -62,6 +62,13 @@ This method accepts instances of both the `Illuminate\Http\File` and `Illuminate
 $post->storeFile('file', $request->file('attachment'));
 ```
 
+To store raw string content, use the `storeFileFromString` method.
+```php
+$post->storeFileFromString('file', 'Hello world');
+
+$post->storeFileFromString('file', '{"key":"value"}');
+```
+
 ### Retrieving file info
 ```php
 $post->hasFile('file'); // returns true/false

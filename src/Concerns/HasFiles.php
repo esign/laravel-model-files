@@ -139,6 +139,14 @@ trait HasFiles
         return $this;
     }
 
+    public function storeFileFromString(string $column, string $contents, array $options = []): static
+    {
+        $tmpFile = tempnam(sys_get_temp_dir(), 'model-file-');
+        file_put_contents($tmpFile, $contents);
+
+        return $this->storeFile($column, new File($tmpFile), $options);
+    }
+
     public function deleteFile(string $column): static
     {
         $this->ensureModelIsPersisted();
